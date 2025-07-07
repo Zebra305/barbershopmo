@@ -101,7 +101,6 @@ export default function ReviewsCarousel() {
                 </div>
                 <p className="text-gray-600 mb-4">{review.comment}</p>
                 <div className="flex items-center">
-                  <div className="w-10 h-10 bg-gray-300 rounded-full mr-3"></div>
                   <div>
                     <p className="font-semibold text-barber-dark">
                       {review.customerName}
