@@ -157,6 +157,11 @@ Changelog:
   - Real-time business hours checking with next opening time calculation
   - Updated WebSocket broadcasts to include business status
   - Enhanced queue status component with business hours information
+- July 07, 2025. Integrated authentic Google reviews:
+  - Replaced placeholder reviews with 21 authentic Google customer reviews
+  - Preserved original languages (Dutch, English, Spanish, Arabic, Italian) without translation
+  - Removed profile picture placeholders from reviews component
+  - Removed customer login button from landing page (admin access only via /baas)
 ```
 
 ## User Preferences

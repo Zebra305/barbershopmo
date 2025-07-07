@@ -255,15 +255,7 @@ export default function Landing() {
         </div>
       </footer>
 
-      {/* Login Button */}
-      <div className="fixed bottom-4 right-4">
-        <Button
-          onClick={() => (window.location.href = "/api/login")}
-          className="bg-barber-gold hover:bg-yellow-600 text-barber-dark"
-        >
-          {t("auth.login")}
-        </Button>
-      </div>
+
     </div>
   );
 }
