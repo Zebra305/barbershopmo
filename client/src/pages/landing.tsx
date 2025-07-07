@@ -85,7 +85,7 @@ export default function Landing() {
       <section id="reviews" className="py-12 bg-barber-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-barber-dark mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-barber-dark mb-2">
               {t("reviews.title")}
             </h2>
             <p className="text-gray-600">{t("reviews.subtitle")}</p>
@@ -98,7 +98,7 @@ export default function Landing() {
       <section id="queue" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-barber-dark mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-barber-dark mb-2">
               {t("queue.title")}
             </h2>
             <p className="text-gray-600">{t("queue.subtitle")}</p>
@@ -111,17 +111,17 @@ export default function Landing() {
       <section id="pricing" className="py-12 bg-barber-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-barber-dark mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-barber-dark mb-2">
               {t("pricing.title")}
             </h2>
             <p className="text-gray-600">{t("pricing.subtitle")}</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {services.map((service, index) => (
               <div
                 key={index}
-                className={`bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow ${
+                className={`bg-white rounded-lg shadow-md p-4 sm:p-6 hover:shadow-lg transition-shadow ${
                   service.popular ? "border-2 border-barber-gold" : ""
                 }`}
               >
@@ -132,11 +132,11 @@ export default function Landing() {
                     </div>
                   )}
                   <service.icon className="w-8 h-8 text-barber-gold mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-barber-dark mb-2">
+                  <h3 className="text-lg sm:text-xl font-semibold text-barber-dark mb-2">
                     {service.name}
                   </h3>
-                  <p className="text-gray-600 mb-4">{service.description}</p>
-                  <div className="text-3xl font-bold text-barber-gold mb-4">
+                  <p className="text-sm sm:text-base text-gray-600 mb-4">{service.description}</p>
+                  <div className="text-2xl sm:text-3xl font-bold text-barber-gold mb-4">
                     {service.price}
                   </div>
                   <ul className="text-sm text-gray-600 space-y-2">
@@ -155,7 +155,7 @@ export default function Landing() {
       <section id="gallery" className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-barber-dark mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-barber-dark mb-2">
               {t("gallery.title")}
             </h2>
             <p className="text-gray-600">{t("gallery.subtitle")}</p>
@@ -168,30 +168,30 @@ export default function Landing() {
       <section id="contact" className="py-12 bg-barber-light">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-barber-dark mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-barber-dark mb-2">
               {t("contact.title")}
             </h2>
             <p className="text-gray-600">{t("contact.subtitle")}</p>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8">
             {/* Contact Information */}
-            <div className="bg-white rounded-lg p-6 shadow-md">
-              <h3 className="text-xl font-semibold text-barber-dark mb-4">
+            <div className="bg-white rounded-lg p-4 sm:p-6 shadow-md">
+              <h3 className="text-lg sm:text-xl font-semibold text-barber-dark mb-4">
                 {t("contact.visitShop")}
               </h3>
               <div className="space-y-4">
                 {contactInfo.map((info, index) => (
                   <div key={index} className="flex items-center">
-                    <info.icon className="w-5 h-5 text-barber-gold mr-3" />
-                    <span className="text-gray-700">{info.text}</span>
+                    <info.icon className="w-4 h-4 sm:w-5 sm:h-5 text-barber-gold mr-2 sm:mr-3 flex-shrink-0" />
+                    <span className="text-sm sm:text-base text-gray-700">{info.text}</span>
                   </div>
                 ))}
               </div>
               
               <div className="mt-6">
-                <h4 className="font-semibold text-barber-dark mb-2 flex items-center">
-                  <Clock className="w-5 h-5 mr-2" />
+                <h4 className="text-sm sm:text-base font-semibold text-barber-dark mb-2 flex items-center">
+                  <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   {t("contact.openingHours")}
                 </h4>
                 <div className="text-sm text-gray-600 space-y-1">
@@ -206,8 +206,8 @@ export default function Landing() {
             </div>
             
             {/* Social Media */}
-            <div className="bg-white rounded-lg p-6 shadow-md">
-              <h3 className="text-xl font-semibold text-barber-dark mb-4">
+            <div className="bg-white rounded-lg p-4 sm:p-6 shadow-md">
+              <h3 className="text-lg sm:text-xl font-semibold text-barber-dark mb-4">
                 {t("contact.followUs")}
               </h3>
               <div className="grid grid-cols-2 gap-4">

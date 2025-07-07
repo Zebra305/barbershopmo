@@ -253,12 +253,12 @@ export default function Admin() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-barber-dark">
+              <h1 className="text-xl sm:text-2xl font-bold text-barber-dark">
                 {t("admin.title")}
               </h1>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="hidden sm:flex items-center space-x-2">
                 <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`}></div>
                 <span className="text-sm text-gray-600">
                   {isConnected ? t("admin.connected") : t("admin.disconnected")}
@@ -268,17 +268,35 @@ export default function Admin() {
                 onClick={() => (window.location.href = "/")}
                 variant="outline"
                 size="sm"
+                className="hidden sm:flex"
               >
                 <Home className="w-4 h-4 mr-2" />
                 {t("admin.home")}
               </Button>
               <Button
+                onClick={() => (window.location.href = "/")}
+                variant="outline"
+                size="sm"
+                className="sm:hidden"
+              >
+                <Home className="w-4 h-4" />
+              </Button>
+              <Button
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
+                className="hidden sm:flex"
               >
                 <LogOut className="w-4 h-4 mr-2" />
                 {t("auth.logout")}
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="sm:hidden"
+              >
+                <LogOut className="w-4 h-4" />
               </Button>
             </div>
           </div>
@@ -286,7 +304,7 @@ export default function Admin() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
           {/* Queue Management */}
           <Card>
             <CardHeader>
@@ -308,24 +326,27 @@ export default function Admin() {
                 </p>
               </div>
               
-              <div className="flex justify-center space-x-4">
+              <div className="flex justify-center space-x-2 sm:space-x-4">
                 <Button
                   onClick={() => completeQueueMutation.mutate()}
                   disabled={completeQueueMutation.isPending || queueCount === 0}
                   variant="outline"
                   size="lg"
+                  className="flex-1 sm:flex-none"
                 >
-                  <Minus className="w-4 h-4 mr-2" />
-                  {t("admin.complete")}
+                  <Minus className="w-4 h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">{t("admin.complete")}</span>
+                  <span className="sm:hidden">Done</span>
                 </Button>
                 <Button
                   onClick={() => addQueueMutation.mutate()}
                   disabled={addQueueMutation.isPending}
                   size="lg"
-                  className="bg-barber-gold hover:bg-yellow-600 text-barber-dark"
+                  className="bg-barber-gold hover:bg-yellow-600 text-barber-dark flex-1 sm:flex-none"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t("admin.addCustomer")}
+                  <Plus className="w-4 h-4 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">{t("admin.addCustomer")}</span>
+                  <span className="sm:hidden">Add</span>
                 </Button>
               </div>
             </CardContent>
@@ -370,8 +391,8 @@ export default function Admin() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col h-96">
-                <ScrollArea className="flex-1 mb-4 p-4 bg-barber-light rounded-lg">
+              <div className="flex flex-col h-80 sm:h-96">
+                <ScrollArea className="flex-1 mb-4 p-2 sm:p-4 bg-barber-light rounded-lg">
                   <div className="space-y-4">
                     {aiChatHistory?.length === 0 ? (
                       <p className="text-gray-500 text-center">
@@ -384,7 +405,7 @@ export default function Admin() {
                           className={`flex ${message.isFromUser ? "justify-end" : "justify-start"}`}
                         >
                           <div
-                            className={`max-w-xs px-4 py-2 rounded-lg ${
+                            className={`max-w-xs sm:max-w-sm px-3 sm:px-4 py-2 rounded-lg text-sm sm:text-base ${
                               message.isFromUser
                                 ? "bg-barber-gold text-barber-dark"
                                 : "bg-white text-gray-800"
@@ -404,13 +425,13 @@ export default function Admin() {
                     value={aiChatInput}
                     onChange={(e) => setAiChatInput(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    className="flex-1"
+                    className="flex-1 text-sm sm:text-base"
                     rows={2}
                   />
                   <Button
                     onClick={handleSendAiMessage}
                     disabled={sendAiMessageMutation.isPending || !aiChatInput.trim()}
-                    className="bg-barber-gold hover:bg-yellow-600 text-barber-dark"
+                    className="bg-barber-gold hover:bg-yellow-600 text-barber-dark px-3 sm:px-4"
                   >
                     <Send className="w-4 h-4" />
                   </Button>
