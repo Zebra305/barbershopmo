@@ -222,11 +222,7 @@ export default function Landing() {
                 ))}
               </div>
               
-              <div className="mt-6 p-4 bg-barber-light rounded-lg">
-                <p className="text-sm text-gray-600 text-center">
-                  {t("contact.tagUs")}
-                </p>
-              </div>
+              
             </div>
           </div>
         </div>
