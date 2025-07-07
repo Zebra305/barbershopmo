@@ -48,28 +48,20 @@ export default function Admin() {
   // WebSocket connection
   const { sendMessage, isConnected } = useWebSocket();
 
-  // Check admin session
+  // Check admin session first
   useEffect(() => {
     const adminSession = localStorage.getItem("admin-session");
     if (!adminSession) {
       navigate("/baas");
+      return;
     }
   }, [navigate]);
 
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      toast({
-        title: "Unauthorized",
-        description: "You are logged out. Logging in again...",
-        variant: "destructive",
-      });
-      setTimeout(() => {
-        window.location.href = "/api/login";
-      }, 500);
-      return;
-    }
-  }, [isAuthenticated, isLoading, toast]);
+  // Don't redirect to Replit auth if no admin session
+  const adminSession = localStorage.getItem("admin-session");
+  if (!adminSession) {
+    return null; // Will be handled by useEffect above
+  }
 
   // Check if user is admin
   useEffect(() => {

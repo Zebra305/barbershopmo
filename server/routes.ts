@@ -24,6 +24,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware
   await setupAuth(app);
 
+  // Simple admin check middleware (for demo purposes)
+  const checkAdminSession = (req: any, res: any, next: any) => {
+    const adminHeader = req.headers['x-admin-session'];
+    console.log('Admin header check:', adminHeader, typeof adminHeader);
+    if (adminHeader === 'true') {
+      next();
+    } else {
+      res.status(403).json({ message: "Admin access required" });
+    }
+  };
+
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
@@ -53,12 +64,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/queue/add', isAuthenticated, async (req: any, res) => {
+  app.post('/api/queue/add', checkAdminSession, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user?.isAdmin) {
-        return res.status(403).json({ message: "Admin access required" });
-      }
 
       const data = insertQueueEntrySchema.parse(req.body);
       const entry = await storage.addQueueEntry(data);
@@ -74,12 +81,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/queue/complete/:id', isAuthenticated, async (req: any, res) => {
+  app.post('/api/queue/complete/:id', checkAdminSession, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user?.isAdmin) {
-        return res.status(403).json({ message: "Admin access required" });
-      }
 
       const id = parseInt(req.params.id);
       const { actualDuration } = req.body;
@@ -163,14 +166,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI Chat routes
-  app.get('/api/ai-chat/history', isAuthenticated, async (req: any, res) => {
+  app.get('/api/ai-chat/history', checkAdminSession, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user?.isAdmin) {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-
-      const history = await storage.getAiChatHistory(req.user.claims.sub);
+      const history = await storage.getAiChatHistory('admin-demo');
       res.json(history);
     } catch (error) {
       console.error("Error fetching AI chat history:", error);
@@ -178,17 +176,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post('/api/ai-chat/message', isAuthenticated, async (req: any, res) => {
+  app.post('/api/ai-chat/message', checkAdminSession, async (req: any, res) => {
     try {
-      const user = await storage.getUser(req.user.claims.sub);
-      if (!user?.isAdmin) {
-        return res.status(403).json({ message: "Admin access required" });
-      }
-
       const data = insertAiChatMessageSchema.parse(req.body);
       const message = await storage.addAiChatMessage({
         ...data,
-        userId: req.user.claims.sub,
+        userId: 'admin-demo',
       });
 
       // TODO: Send to AI webhook via n8n
