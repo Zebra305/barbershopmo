@@ -8,11 +8,10 @@ export function isBusinessOpen(): boolean {
   const hour = netherlandsDate.getHours();
   const day = netherlandsDate.getDay(); // 0 = Sunday, 6 = Saturday
   
-  // Open Monday-Saturday (1-6), 10 AM to 7 PM
-  const isWeekday = day >= 1 && day <= 6;
+  // Open 7 days a week, 10 AM to 7 PM
   const isBusinessHours = hour >= 10 && hour < 19; // 10 AM to 7 PM
   
-  return isWeekday && isBusinessHours;
+  return isBusinessHours;
 }
 
 export function getBusinessStatus(): {
@@ -33,28 +32,13 @@ export function getBusinessStatus(): {
   const now = new Date();
   const netherlandsDate = new Date(now.toLocaleString("sv-SE", { timeZone: "Europe/Amsterdam" }));
   
-  const day = netherlandsDate.getDay(); // 0 = Sunday, 6 = Saturday
   const hour = netherlandsDate.getHours();
   
   let nextOpenStr: string;
   
-  if (day === 0) { // Sunday
-    nextOpenStr = "Monday 10:00 AM";
-  } else if (day === 6) { // Saturday
-    nextOpenStr = "Monday 10:00 AM";
-  } else if (hour >= 19) { // After closing on weekday
-    // Calculate tomorrow
-    const tomorrow = new Date(netherlandsDate);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const tomorrowDay = tomorrow.getDay();
-    
-    if (tomorrowDay === 0) { // Tomorrow is Sunday
-      nextOpenStr = "Monday 10:00 AM";
-    } else {
-      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      nextOpenStr = `${dayNames[tomorrowDay]} 10:00 AM`;
-    }
-  } else { // Before opening on weekday
+  if (hour >= 19) { // After closing
+    nextOpenStr = "Tomorrow 10:00 AM";
+  } else { // Before opening
     nextOpenStr = "10:00 AM";
   }
   

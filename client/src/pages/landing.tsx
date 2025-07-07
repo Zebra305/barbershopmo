@@ -74,7 +74,7 @@ export default function Landing() {
     { day: t("contact.hours.thursday"), time: "10:00 AM - 7:00 PM" },
     { day: t("contact.hours.friday"), time: "10:00 AM - 7:00 PM" },
     { day: t("contact.hours.saturday"), time: "10:00 AM - 7:00 PM" },
-    { day: t("contact.hours.sunday"), time: "Closed" },
+    { day: t("contact.hours.sunday"), time: "10:00 AM - 7:00 PM" },
   ];
 
   return (
