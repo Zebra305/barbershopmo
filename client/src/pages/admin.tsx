@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
@@ -42,9 +43,18 @@ export default function Admin() {
   const [aiChatInput, setAiChatInput] = useState("");
   const [queueCount, setQueueCount] = useState(0);
   const queryClient = useQueryClient();
+  const [, navigate] = useLocation();
 
   // WebSocket connection
   const { sendMessage, isConnected } = useWebSocket();
+
+  // Check admin session
+  useEffect(() => {
+    const adminSession = localStorage.getItem("admin-session");
+    if (!adminSession) {
+      navigate("/baas");
+    }
+  }, [navigate]);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -231,6 +241,11 @@ export default function Admin() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("admin-session");
+    navigate("/baas");
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -266,7 +281,7 @@ export default function Admin() {
                 {t("admin.home")}
               </Button>
               <Button
-                onClick={() => (window.location.href = "/api/logout")}
+                onClick={handleLogout}
                 variant="outline"
                 size="sm"
               >

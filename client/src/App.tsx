@@ -8,6 +8,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Landing from "@/pages/landing";
 import Admin from "@/pages/admin";
+import AdminLogin from "@/pages/admin-login";
 import { TranslationProvider } from "@/hooks/useTranslation";
 
 function Router() {
@@ -15,7 +16,8 @@ function Router() {
 
   return (
     <Switch>
-      <Route path="/baas" component={Admin} />
+      <Route path="/baas" component={AdminLogin} />
+      <Route path="/admin" component={Admin} />
       {isLoading || !isAuthenticated ? (
         <Route path="/" component={Landing} />
       ) : (
