@@ -151,6 +151,12 @@ Changelog:
   - Reviews section positioned at top below navigation
   - Queue section positioned below reviews
   - Multilingual support with persistent language selection
+- July 07, 2025. Added business hours functionality:
+  - Implemented Netherlands timezone business hours (10 AM - 7 PM, Monday-Saturday)
+  - Added business status display in queue section with open/closed indicators
+  - Real-time business hours checking with next opening time calculation
+  - Updated WebSocket broadcasts to include business status
+  - Enhanced queue status component with business hours information
 ```
 
 ## User Preferences

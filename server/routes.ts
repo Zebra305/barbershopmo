@@ -10,6 +10,11 @@ interface QueueUpdateMessage {
   type: 'queue_update';
   count: number;
   estimatedWait: string;
+  businessStatus?: {
+    isOpen: boolean;
+    message: string;
+    nextOpenTime?: string;
+  };
 }
 
 interface AiChatMessage {
@@ -52,11 +57,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const queueLength = await storage.getCurrentQueueLength();
       const estimatedWait = Math.max(queueLength * 15, 0); // 15 minutes per person
+      const { getBusinessStatus } = await import('@shared/business-hours');
+      const businessStatus = getBusinessStatus();
       
       res.json({
         count: queueLength,
         estimatedWait: estimatedWait > 0 ? `${estimatedWait}-${estimatedWait + 5} minutes` : 'No wait',
         lastUpdate: new Date().toISOString(),
+        businessStatus,
       });
     } catch (error) {
       console.error("Error fetching queue status:", error);
@@ -72,7 +80,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Broadcast queue update via WebSocket
       const queueLength = await storage.getCurrentQueueLength();
-      broadcastQueueUpdate(queueLength);
+      await broadcastQueueUpdate(queueLength);
       
       res.json(entry);
     } catch (error) {
@@ -91,7 +99,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Broadcast queue update via WebSocket
       const queueLength = await storage.getCurrentQueueLength();
-      broadcastQueueUpdate(queueLength);
+      await broadcastQueueUpdate(queueLength);
       
       res.json({ success: true });
     } catch (error) {
@@ -242,12 +250,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  function broadcastQueueUpdate(count: number) {
+  async function broadcastQueueUpdate(count: number) {
     const estimatedWait = Math.max(count * 15, 0);
+    const { getBusinessStatus } = await import('@shared/business-hours');
+    const businessStatus = getBusinessStatus();
+    
     const message: QueueUpdateMessage = {
       type: 'queue_update',
       count,
       estimatedWait: estimatedWait > 0 ? `${estimatedWait}-${estimatedWait + 5} minutes` : 'No wait',
+      businessStatus,
     };
     
     wss.clients.forEach((client) => {

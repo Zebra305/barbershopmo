@@ -9,12 +9,22 @@ interface QueueStatus {
   count: number;
   estimatedWait: string;
   lastUpdate: string;
+  businessStatus?: {
+    isOpen: boolean;
+    message: string;
+    nextOpenTime?: string;
+  };
 }
 
 interface WebSocketMessage {
   type: string;
   count?: number;
   estimatedWait?: string;
+  businessStatus?: {
+    isOpen: boolean;
+    message: string;
+    nextOpenTime?: string;
+  };
 }
 
 export default function QueueStatus() {
@@ -36,6 +46,7 @@ export default function QueueStatus() {
           count: message.count || 0,
           estimatedWait: message.estimatedWait || "No wait",
           lastUpdate: new Date().toISOString(),
+          businessStatus: message.businessStatus,
         });
       }
     }
@@ -87,6 +98,28 @@ export default function QueueStatus() {
             <p className="text-gray-600 mb-4">
               {t("queue.estimatedWait")}: {currentData?.estimatedWait || "No wait"}
             </p>
+            
+            {/* Business Hours Status */}
+            {currentData?.businessStatus && (
+              <div className={`mb-4 p-3 rounded-lg border ${
+                currentData.businessStatus.isOpen 
+                  ? 'bg-green-50 border-green-200 text-green-800' 
+                  : 'bg-red-50 border-red-200 text-red-800'
+              }`}>
+                <div className="flex items-center justify-center">
+                  <Info className="w-4 h-4 mr-2" />
+                  <span className="font-medium">
+                    {currentData.businessStatus.message}
+                  </span>
+                </div>
+                {!currentData.businessStatus.isOpen && (
+                  <div className="text-sm mt-1 text-center">
+                    Hours: Monday-Saturday 10 AM - 7 PM (Netherlands Time)
+                  </div>
+                )}
+              </div>
+            )}
+            
             <div className="flex items-center justify-center text-sm text-gray-500">
               <Clock className="w-4 h-4 mr-1" />
               <span>
