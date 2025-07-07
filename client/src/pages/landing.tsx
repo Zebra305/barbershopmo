@@ -68,13 +68,13 @@ export default function Landing() {
   ];
 
   const openingHours = [
-    { day: t("contact.hours.monday"), time: "9:00 AM - 7:00 PM" },
-    { day: t("contact.hours.tuesday"), time: "9:00 AM - 7:00 PM" },
-    { day: t("contact.hours.wednesday"), time: "9:00 AM - 7:00 PM" },
-    { day: t("contact.hours.thursday"), time: "9:00 AM - 7:00 PM" },
-    { day: t("contact.hours.friday"), time: "9:00 AM - 7:00 PM" },
-    { day: t("contact.hours.saturday"), time: "8:00 AM - 6:00 PM" },
-    { day: t("contact.hours.sunday"), time: "10:00 AM - 4:00 PM" },
+    { day: t("contact.hours.monday"), time: "10:00 AM - 7:00 PM" },
+    { day: t("contact.hours.tuesday"), time: "10:00 AM - 7:00 PM" },
+    { day: t("contact.hours.wednesday"), time: "10:00 AM - 7:00 PM" },
+    { day: t("contact.hours.thursday"), time: "10:00 AM - 7:00 PM" },
+    { day: t("contact.hours.friday"), time: "10:00 AM - 7:00 PM" },
+    { day: t("contact.hours.saturday"), time: "10:00 AM - 7:00 PM" },
+    { day: t("contact.hours.sunday"), time: "Closed" },
   ];
 
   return (
