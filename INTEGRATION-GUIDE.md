@@ -88,23 +88,34 @@ docker volume create barbershop_postgres_data
 
 ### 4. Directory Structure
 
-Create this structure in your server:
+You should create the barbershop directory in `/root/` alongside your existing docker-compose.yml:
 
 ```
 /root/
-├── docker-compose.yml (your main file)
-├── barbershop/        (barbershop project files)
+├── docker-compose.yml (your existing main file)
+├── barbershop/        (create this directory with barbershop files)
 │   ├── Dockerfile
 │   ├── package.json
 │   ├── server/
 │   ├── client/
-│   └── logs/
+│   ├── shared/
+│   ├── logs/
+│   └── deploy.sh
 ```
+
+**Steps:**
+1. Create `/root/barbershop/` directory
+2. Copy all barbershop project files into `/root/barbershop/`
+3. The docker-compose.yml context path `./barbershop` will then correctly point to `/root/barbershop/`
 
 ### 5. Deploy
 
 ```bash
 # From your main docker directory (/root/)
+# First, create the volume
+docker volume create barbershop_postgres_data
+
+# Then deploy the barbershop services
 docker-compose up -d barbershop barbershop_db
 ```
 
