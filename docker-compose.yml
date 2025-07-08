@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://barbershop:barbershop_password@db:5432/barbershop
+      - SESSION_SECRET=your-super-secret-session-key-change-this-in-production
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=admin
+    depends_on:
+      - db
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - barbershop-network
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=barbershop
+      - POSTGRES_USER=barbershop
+      - POSTGRES_PASSWORD=barbershop_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - barbershop-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - barbershop-network
+
+volumes:
+  postgres_data:
+
+networks:
+  barbershop-network:
+    driver: bridge

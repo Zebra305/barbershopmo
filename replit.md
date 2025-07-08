@@ -162,6 +162,13 @@ Changelog:
   - Preserved original languages (Dutch, English, Spanish, Arabic, Italian) without translation
   - Removed profile picture placeholders from reviews component
   - Removed customer login button from landing page (admin access only via /baas)
+- July 08, 2025. Self-hosted deployment configuration:
+  - Removed Replit Auth dependency for complete self-hosting capability
+  - Implemented traditional username/password authentication for admin access
+  - Created Docker containerization with PostgreSQL database
+  - Added nginx reverse proxy with SSL/TLS support
+  - Created deployment scripts and comprehensive documentation for VPS hosting
+  - Maintained all existing functionality while removing external dependencies
 ```
 
 ## User Preferences
