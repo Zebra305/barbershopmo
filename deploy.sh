@@ -1,14 +1,15 @@
 #!/bin/bash
 
-# Self-hosted barbershop deployment script
+# Barbershop deployment script for existing Traefik setup
 set -e
 
-echo "🚀 Starting barbershop deployment..."
+echo "🚀 Starting barbershop deployment with existing Traefik setup..."
 
 # Colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Check if running as root
@@ -29,23 +30,58 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
-# Create necessary directories
-echo -e "${YELLOW}Creating directories...${NC}"
-mkdir -p ssl logs
+# Check if .env file exists
+if [ ! -f .env ]; then
+    echo -e "${YELLOW}Creating .env file...${NC}"
+    cat > .env << EOF
+# Barbershop Configuration
+BARBERSHOP_DOMAIN=barbershop.yourdomain.com
+BARBERSHOP_DB_PASSWORD=barbershop_secure_password_$(openssl rand -hex 16)
+BARBERSHOP_SESSION_SECRET=$(openssl rand -hex 32)
+BARBERSHOP_ADMIN_USERNAME=admin
+BARBERSHOP_ADMIN_PASSWORD=admin
 
-# Generate SSL certificate (self-signed for development)
-if [ ! -f ssl/cert.pem ]; then
-    echo -e "${YELLOW}Generating self-signed SSL certificate...${NC}"
-    openssl req -x509 -newkey rsa:4096 -keyout ssl/key.pem -out ssl/cert.pem -days 365 -nodes \
-        -subj "/C=NL/ST=Netherlands/L=Amsterdam/O=Barbershop/CN=localhost"
+# Existing variables (if any)
+# Add your existing environment variables here
+EOF
+    echo -e "${BLUE}Please edit .env file with your domain and secure passwords${NC}"
+    echo -e "${BLUE}Domain should be something like: barbershop.yourdomain.com${NC}"
+    read -p "Press Enter to continue after editing .env file..."
 fi
 
-# Set proper permissions
-chmod 600 ssl/key.pem
-chmod 644 ssl/cert.pem
+# Create necessary directories
+echo -e "${YELLOW}Creating directories...${NC}"
+mkdir -p logs
+
+# Create external volumes if they don't exist
+echo -e "${YELLOW}Creating Docker volumes...${NC}"
+docker volume create barbershop_postgres_data 2>/dev/null || true
+
+# Check if networks exist
+echo -e "${YELLOW}Checking Docker networks...${NC}"
+if ! docker network ls | grep -q root_default; then
+    echo -e "${YELLOW}Creating root_default network...${NC}"
+    docker network create root_default
+fi
+
+if ! docker network ls | grep -q services-network; then
+    echo -e "${YELLOW}Creating services-network...${NC}"
+    docker network create services-network
+fi
+
+# Load environment variables
+set -a
+source .env
+set +a
+
+# Validate required environment variables
+if [[ -z "$BARBERSHOP_DOMAIN" ]]; then
+    echo -e "${RED}BARBERSHOP_DOMAIN is not set in .env file${NC}"
+    exit 1
+fi
 
 # Build and start services
-echo -e "${YELLOW}Building and starting services...${NC}"
+echo -e "${YELLOW}Building and starting barbershop services...${NC}"
 docker-compose up --build -d
 
 # Wait for services to be ready
@@ -54,22 +90,22 @@ sleep 30
 
 # Check if services are running
 if docker-compose ps | grep -q "Up"; then
-    echo -e "${GREEN}✅ Services are running successfully!${NC}"
-    echo -e "${GREEN}✅ App is available at: https://localhost${NC}"
-    echo -e "${GREEN}✅ Admin panel: https://localhost/baas${NC}"
-    echo -e "${GREEN}✅ Admin credentials: admin/admin${NC}"
+    echo -e "${GREEN}✅ Barbershop services are running successfully!${NC}"
+    echo -e "${GREEN}✅ App is available at: https://${BARBERSHOP_DOMAIN}${NC}"
+    echo -e "${GREEN}✅ Admin panel: https://${BARBERSHOP_DOMAIN}/baas${NC}"
+    echo -e "${GREEN}✅ Admin credentials: ${BARBERSHOP_ADMIN_USERNAME}/${BARBERSHOP_ADMIN_PASSWORD}${NC}"
 else
     echo -e "${RED}❌ Some services failed to start. Check logs:${NC}"
-    docker-compose logs
+    docker-compose logs barbershop
 fi
 
 # Show running containers
-echo -e "${YELLOW}Running containers:${NC}"
+echo -e "${YELLOW}Running barbershop containers:${NC}"
 docker-compose ps
 
 echo -e "${GREEN}🎉 Deployment completed!${NC}"
 echo -e "${YELLOW}Next steps:${NC}"
-echo "1. Update your domain in nginx.conf"
-echo "2. Replace self-signed certificate with real SSL certificate"
-echo "3. Change default admin password in docker-compose.yml"
-echo "4. Configure your firewall to allow ports 80 and 443"
+echo "1. Make sure your DNS points ${BARBERSHOP_DOMAIN} to your server"
+echo "2. Traefik will automatically handle SSL certificates via Let's Encrypt"
+echo "3. Change default admin password in .env file if needed"
+echo "4. The barbershop app is now integrated with your existing Traefik setup"

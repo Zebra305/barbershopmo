@@ -1,14 +1,15 @@
 # Self-Hosted Barbershop Deployment Guide
 
-This guide explains how to deploy your barbershop management system on your own Ubuntu VPS without any dependencies on Replit services.
+This guide explains how to deploy your barbershop management system on your own Ubuntu VPS without any dependencies on Replit services. The deployment is designed to work with your existing Traefik setup.
 
 ## Prerequisites
 
 - Ubuntu VPS with root access
-- Domain name (optional, can use IP address)
+- Domain name (required for Traefik/SSL)
 - Docker and Docker Compose installed
+- Existing Traefik setup (detected in your current configuration)
 
-## Quick Start
+## Quick Start (Traefik Integration)
 
 1. **Clone/Upload your project files to your VPS**
 
@@ -21,56 +22,48 @@ This guide explains how to deploy your barbershop management system on your own 
    ```bash
    ./deploy.sh
    ```
+   This will create a `.env` file for you to configure.
 
-4. **Access your application:**
-   - Website: `https://your-domain.com` or `https://your-ip`
-   - Admin panel: `https://your-domain.com/baas`
+4. **Edit the `.env` file with your domain:**
+   ```bash
+   nano .env
+   ```
+   Set `BARBERSHOP_DOMAIN=barbershop.yourdomain.com`
+
+5. **Access your application:**
+   - Website: `https://barbershop.yourdomain.com`
+   - Admin panel: `https://barbershop.yourdomain.com/baas`
    - Default admin credentials: `admin/admin`
 
 ## Configuration
 
 ### Environment Variables
 
-Edit `docker-compose.yml` to customize:
+Edit `.env` file to customize:
 
-```yaml
-environment:
-  - NODE_ENV=production
-  - DATABASE_URL=postgresql://barbershop:barbershop_password@db:5432/barbershop
-  - SESSION_SECRET=your-super-secret-session-key-change-this-in-production
-  - ADMIN_USERNAME=admin
-  - ADMIN_PASSWORD=admin
+```bash
+# Barbershop Configuration
+BARBERSHOP_DOMAIN=barbershop.yourdomain.com
+BARBERSHOP_DB_PASSWORD=your_secure_database_password
+BARBERSHOP_SESSION_SECRET=your_secure_session_secret
+BARBERSHOP_ADMIN_USERNAME=admin
+BARBERSHOP_ADMIN_PASSWORD=your_secure_admin_password
 ```
 
 ### SSL Certificate
 
-For production, replace the self-signed certificate:
-
-1. Obtain SSL certificate from Let's Encrypt:
-   ```bash
-   sudo apt install certbot
-   sudo certbot certonly --standalone -d your-domain.com
-   ```
-
-2. Copy certificates to ssl directory:
-   ```bash
-   sudo cp /etc/letsencrypt/live/your-domain.com/fullchain.pem ssl/cert.pem
-   sudo cp /etc/letsencrypt/live/your-domain.com/privkey.pem ssl/key.pem
-   ```
-
-3. Restart nginx:
-   ```bash
-   docker-compose restart nginx
-   ```
+SSL certificates are automatically managed by your existing Traefik setup using Let's Encrypt. No additional configuration needed.
 
 ### Domain Configuration
 
-1. Update `nginx.conf` with your domain:
-   ```nginx
-   server_name your-domain.com www.your-domain.com;
+1. Set your domain in the `.env` file:
+   ```bash
+   BARBERSHOP_DOMAIN=barbershop.yourdomain.com
    ```
 
 2. Point your domain's A record to your VPS IP address
+
+3. Traefik will automatically handle routing and SSL certificates
 
 ## Manual Installation (without Docker)
 
