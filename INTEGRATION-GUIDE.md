@@ -1,4 +1,16 @@
-  # Add barbershop service to your existing docker-compose.yml
+# Barbershop Integration with Existing Docker Setup
+
+## Overview
+This guide shows how to add the barbershop service to your existing docker-compose.yml without disrupting your current services.
+
+## Integration Steps
+
+### 1. Add Barbershop Services to Your Main docker-compose.yml
+
+Add these services to your existing `/root/docker-compose.yml`:
+
+```yaml
+  # Add these services to your existing docker-compose.yml
   barbershop:
     build: 
       context: ./barbershop  # Path to barbershop project directory
@@ -55,3 +67,75 @@
       interval: 10s
       timeout: 5s
       retries: 3
+```
+
+### 2. Add Volume to Your Main docker-compose.yml
+
+Add this volume to your existing volumes section:
+
+```yaml
+volumes:
+  # ... your existing volumes ...
+  barbershop_postgres_data:
+    external: true
+```
+
+### 3. Create the Volume
+
+```bash
+docker volume create barbershop_postgres_data
+```
+
+### 4. Directory Structure
+
+Create this structure in your server:
+
+```
+/root/
+├── docker-compose.yml (your main file)
+├── barbershop/        (barbershop project files)
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── server/
+│   ├── client/
+│   └── logs/
+```
+
+### 5. Deploy
+
+```bash
+# From your main docker directory (/root/)
+docker-compose up -d barbershop barbershop_db
+```
+
+## Access URLs
+
+After deployment:
+
+- **Main Website**: `http://69.62.114.108/mo`
+- **Admin Panel**: `http://69.62.114.108/baas`
+- **Admin Login**: `admin/admin`
+
+## How It Works
+
+1. **Path-based Routing**: Traefik routes `/mo` to the barbershop main site and `/baas` to admin
+2. **No SSL Required**: Uses HTTP for simplicity
+3. **Existing Networks**: Uses your current `root_default` and `services-network`
+4. **Port 3001**: Avoids conflict with your existing services on port 5000
+5. **Strip Prefix**: `/mo` is stripped so the app works normally
+6. **Admin Redirect**: `/baas` redirects to `/mo/baas` for proper routing
+
+## Benefits
+
+✅ No disruption to existing services  
+✅ Uses your current Traefik setup  
+✅ Simple IP-based access  
+✅ No SSL complexity  
+✅ Easy to remove if needed  
+
+## Troubleshooting
+
+- Check logs: `docker-compose logs barbershop`
+- Verify networks: `docker network ls`
+- Check Traefik dashboard for routing rules
+- Ensure port 3001 is not in use

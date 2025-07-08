@@ -166,8 +166,10 @@ Changelog:
   - Removed Replit Auth dependency for complete self-hosting capability
   - Implemented traditional username/password authentication for admin access
   - Created Docker containerization with PostgreSQL database
-  - Added nginx reverse proxy with SSL/TLS support
-  - Created deployment scripts and comprehensive documentation for VPS hosting
+  - Integrated with existing Traefik setup for path-based routing
+  - Configured IP-based access via /mo (main site) and /baas (admin) paths
+  - Fixed port conflicts by moving from 5000 to 3001
+  - Created integration guide for existing Docker infrastructure
   - Maintained all existing functionality while removing external dependencies
 ```
 
@@ -175,4 +177,7 @@ Changelog:
 
 ```
 Preferred communication style: Simple, everyday language.
+Deployment preference: IP-based access with path routing (/mo and /baas)
+Infrastructure: Existing Traefik setup with Docker Compose
+SSL preference: Not required for current setup
 ```
