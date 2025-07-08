@@ -244,7 +244,7 @@ export default function Landing() {
                   className="text-gray-300 hover:text-barber-gold transition-colors"
                 >
                   <span className="sr-only">{platform}</span>
-                  <div className="w-6 h-6 bg-gray-300 rounded"></div>
+                  
                 </a>
               ))}
             </div>
